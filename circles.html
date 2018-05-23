@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shapes and Sounds</title>
+    <link rel="stylesheet" href="circles.css">
+    <script type="text/javascript" src="paper-full.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.12/howler.core.min.js"></script>
+    <script type="text/paperscript" canvas="myCanvas">    
+        
+        var keyData = {
+            a: {
+                shape: "rect",
+                color:"#EAECEE",
+                sound : new Howl({
+                    src: ['sounds/8081.wav']
+                })
+            },
+            s: {
+                shape: "rect",
+                color: "#D8BEDF",
+                sound : new Howl({
+                    src: ['sounds/8082.wav']
+                })
+            },
+            d: {
+                shape: "rect",
+                color: "#D5EBF7",
+                sound : new Howl({
+                    src: ['sounds/8083.wav']
+                })
+            },
+            f: {
+                shape: "rect",
+                color: "#E8B0AB",
+                sound : new Howl({
+                    src: ['sounds/8084.wav']
+                })
+            },
+            q: {
+                shape: "rect",
+                color: "#7F8B95",
+                sound : new Howl({
+                    src: ['sounds/chord1.wav']
+                })
+            },
+            w: {
+                shape: "rect",
+                color: "#9D5AB0",
+                sound : new Howl({
+                    src: ['sounds/chord2.wav']
+                })
+            },
+            e: {
+                shape: "rect",
+                color: "#4E9AC3",
+                sound : new Howl({
+                    src: ['sounds/chord3.wav']
+                })
+            },
+            r: {
+                shape: "rect",
+                color: "#D15F58",
+                sound : new Howl({
+                    src: ['sounds/chord4.wav']
+                })
+            },
+            z: {
+                shape: "circle",
+                color: "#2B3E4E",
+                sound : new Howl({
+                    src: ['sounds/voice1.wav']
+                })
+            },
+            x: {
+                shape: "circle",
+                color: "#643A70",
+                sound : new Howl({
+                    src: ['sounds/voice2.wav']
+                })
+            },
+            c: {
+                shape: "circle",
+                color: "#176289",
+                sound : new Howl({
+                    src: ['sounds/voice3.wav']
+                })
+            },
+            v: {
+                shape: "circle",
+                color: "#7D231F",
+                sound : new Howl({
+                    src: ['sounds/voice4.wav']
+                })
+            },
+            b: {
+                shape: "circle",
+                color: "#fb35d5",
+                sound : new Howl({
+                    src: ['sounds/kick1.wav']
+                })
+            },
+            n: {
+                shape: "rect",
+                color: "#fcd6a7",
+                sound : new Howl({
+                    src: ['sounds/1stsnare.wav']
+                })
+            },
+            m: {
+                shape: "circle",
+                color: "#d98732",
+                sound : new Howl({
+                    src: ['sounds/WarmHat.wav']
+                })
+            },
+            g: {
+                shape: "circle",
+                color: "#fcf3d3",
+                sound : new Howl({
+                    src: ['sounds/snare2.wav']
+                })
+            },
+            h: {
+                shape: "rect",
+                color: "#37c9b2",
+                sound : new Howl({
+                    src: ['sounds/2ndRide.wav']
+                })
+            },
+            j: {
+                shape: "rect",
+                color: "#7d231f",
+                sound : new Howl({
+                    src: ['sounds/HigherCrash.wav']
+                })
+            },
+            t: {
+                shape: "circle",
+                color: "#172129",
+                sound : new Howl({
+                    src: ['sounds/MysteryPerc.wav']
+                })
+            },
+            y: {
+                shape: "circle",
+                color: "#005346",
+                sound : new Howl({
+                    src: ['sounds/sprinkle5.wav']
+                })
+            },
+            u: {
+                shape: "circle",
+                color: "#ebf5fa",
+                sound : new Howl({
+                    src: ['sounds/perc.wav']
+                })
+            }
+        }
+
+        var shapes = [];
+        
+        //key press function
+        function onKeyDown(event) {
+
+            //random point
+            var maxPoint = new Point(view.size.width, view.size.height);
+            var randomPoint = Point.random();
+            var point = maxPoint * randomPoint;
+            //random size for rect
+            var randomSize = ((new Size(700, 500)) + 300) * Size.random();
+
+            //random radius
+            var randomRadius = Math.floor(Math.random() * 250) + 75;  
+            
+            if(!keyData[event.key]){
+                console.log("no shape");
+            }else if(keyData[event.key].shape === "circle"){ 
+                var newCircle = new Path.Circle(new Point(point),randomRadius);
+                newCircle.fillColor = keyData[event.key].color;
+                keyData[event.key].sound.play();
+                shapes.push(newCircle);
+            }else if(keyData[event.key].shape === "rect"){
+                var newRect = new Path.Rectangle({
+                    point: point,
+                    size: randomSize,
+                    fillColor: keyData[event.key].color
+                });
+                keyData[event.key].sound.play();
+                shapes.push(newRect);
+            }
+        }
+
+        //shape changing animation
+        function onFrame(event){
+            for(var i = 0; i < shapes.length; i++){
+                shapes[i].fillColor.hue += 1;
+                shapes[i].scale(.91);
+                shapes[i].rotate(.25);
+                if(shapes[i].area < 1){
+                    shapes[i].remove();//remove shape from canvas
+                    shapes.splice(i,1);//remove shape from array
+                    i--;// decrement i so that the loop doesn't skip a shape because of .splice()
+                }
+            }
+        }
+    </script>
+</head>
+<body>
+    <canvas id="myCanvas" resize></canvas>
+</body>
+</html>
